@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .small {
+            width: 100px;
+            height: 100px;
+        }
+
+        .big {
+            width: 200px;
+            height: 200px;
+        }
+
+        .wide {
+            width: 200px;
+            height: 100px;
+        }
+
+        .tall {
+            width: 100px;
+            height: 200px;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+
+<div id="parent1"></div>
+<div id="parent2"></div>
+<div class="some-div">.some-div</div>
+
+
+<script>
+    const ge = s => document.querySelector(s);
+
+    const parent1 = ge('#parent1');
+    const parent2 = ge('#parent2');
+
+    const el1 = createElement('div', {
+        appendTo: parent1,
+        attrs: {
+            className: 'small red',
+        },
+        content: 'Hello',
+    });
+
+    const el2 = createElement('div', {
+        attrs: {
+            className: 'wide green',
+        },
+        content: [
+            'Second div',
+            ge('.some-div'),
+            createElement('input', {
+                attrs: {
+                    value: 'Disabled input'
+                },
+                events: {
+                    click: event => {
+                        event.target.disabled = true;
+                        console.log('Input disabled');
+                    }
+                }
+            }),
+        ],
+    });
+
+    parent2.append(el2);
+
+    // Создать функцию которая принимает на вход 2 параметра.
+    // tagName - имя тега, элемент которого необходимо создать
+    // options - объект с параметрами которые все могут быть не обязательными.
+    // options.appendTo - елемент или селектор элемента в который необходимо поместить только что созданный элемент
+    // options.attrs - объект с аттрибутами которые можно присвоить к элементу.
+    // options.content - дочерний элемент для только что созданного элемента или массив дочерних элементов.
+    //   Параметр может быть как обычный элемент, строка, или массив элементов или строк.
+    // options.events - объект, где ключи это имена событий на которые необходимо подписаться. А значения этого объекта это функции обработчики для данного события
+    function createElement(tagName, options) {
+        let element = document.createElement(tagName);
+
+        if(options.appendTo) {
+            let parent = options.appendTo;
+            if(typeof parent === 'string') {
+                parent = ge(options.appendTo)
+            }
+            parent.append(element);
+        }
+
+        if(options.attrs){
+            for(let attr in options.attrs) {
+                element[attr] = options.attrs[attr];
+            }
+        }
+
+        if(options.content) {
+            let content = [options.content];
+            if(Array.isArray(options.content)) {
+                content = options.content;
+            }
+
+            content.forEach(item => {
+                if(typeof item === 'string') {
+                    element.innerHTML = item;
+                } else {
+                    element.append(item)
+                }
+            })
+        }
+
+        if(options.events) {
+            for(let event in options.events) {
+                element.addEventListener(event, options.events[event])
+            }
+        }
+
+        return element;
+    }
+</script>
+</body>
+</html>
