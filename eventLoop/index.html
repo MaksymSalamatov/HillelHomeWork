@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="counter"></div>
+
+
+<script>
+    let counterBlock = document.querySelector('.counter');
+
+    let i = 0;
+
+    function countNumber() {
+        do{
+            i++;
+            counterBlock.innerHTML = i;
+        } while (i < 1)
+
+        if(i < 1e5) {
+            setTimeout(countNumber);
+        }
+    }
+
+    countNumber()
+</script>
+</body>
+</html>
